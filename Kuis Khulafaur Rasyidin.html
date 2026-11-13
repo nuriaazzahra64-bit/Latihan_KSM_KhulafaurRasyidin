@@ -1,0 +1,722 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kuis Khulafaur Rasyidin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<style>
+/* Layout: satu kolom sempit (maks 760px). Header dengan tab guru, kartu soal di tengah, navigasi nomor soal di bawahnya. */
+:root{
+  --bg:#F3F7F6; --surface:#FFFFFF; --ink:#13231F; --muted:#586A65; --line:#D5E0DC;
+  --accent:#0B6E64; --accent-ink:#FFFFFF; --accent-soft:#DCEFEB;
+  --good:#1B7F4B; --good-soft:#DDF3E6; --bad:#B3362B; --bad-soft:#FBE4E1;
+  --font-display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1715; --surface:#16231F; --ink:#E6F0ED; --muted:#9FB3AD; --line:#2A3D38;
+    --accent:#4FC2B2; --accent-ink:#06201C; --accent-soft:#1B3A35;
+    --good:#5CCB8A; --good-soft:#18362A; --bad:#F0837A; --bad-soft:#3E1F1C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1715; --surface:#16231F; --ink:#E6F0ED; --muted:#9FB3AD; --line:#2A3D38;
+  --accent:#4FC2B2; --accent-ink:#06201C; --accent-soft:#1B3A35;
+  --good:#5CCB8A; --good-soft:#18362A; --bad:#F0837A; --bad-soft:#3E1F1C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--font-body)}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
+p{margin:0}
+[hidden]{display:none!important}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.brand{font:700 15px/1.2 var(--font-display)}
+.brand small{display:block;margin-top:2px;font:500 12px var(--font-body);color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.tabs{display:flex;gap:4px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.tabs button{font:600 13px var(--font-body);padding:7px 12px;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.stack{display:grid;gap:16px}
+.eyebrow{font:600 12px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.note{font-size:14px;color:var(--muted)}
+.note[data-s="saved"]{color:var(--good)}
+.note[data-s="error"]{color:var(--bad)}
+
+.btn{font:600 15px var(--font-body);padding:11px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.small{font-size:13px;padding:6px 10px}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.cell:focus-visible,.tabs button:focus-visible,input[type="text"]:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+
+/* Mulai */
+.lede{font-size:17px;color:var(--muted);max-width:56ch}
+.hero h1{font-size:clamp(28px,6vw,38px);line-height:1.12;font-weight:800;letter-spacing:-.01em}
+.field{display:grid;gap:6px}
+.field label{font:600 14px var(--font-body)}
+.field input{font:400 16px var(--font-body);padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.err{font-size:13px;color:var(--bad)}
+.fields{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:520px){.fields{grid-template-columns:1fr}}
+.topics{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.topics li{display:flex;gap:14px;padding:9px 0;border-top:1px solid var(--line);font-size:15px}
+.topics li:first-child{border-top:0}
+.topics .rng{flex:none;width:76px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:500}
+
+/* Kuis */
+.meta{display:flex;justify-content:space-between;gap:12px;font:500 13px var(--font-body);color:var(--muted);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.track{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.fill{height:100%;width:0;background:var(--accent);transition:width .2s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.stem{font:600 20px/1.4 var(--font-display);margin-top:6px;white-space:pre-line;text-wrap:pretty}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{position:relative;display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.key{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:700 13px var(--font-display);background:var(--bg);color:var(--muted)}
+.opt:has(input:checked) .key{background:var(--accent);color:var(--accent-ink)}
+.txt{min-width:0;overflow-wrap:anywhere;padding-top:3px}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.confirm{margin-top:18px;padding:16px;border-radius:12px;background:var(--accent-soft);display:grid;gap:12px}
+details.navbox{margin-top:16px}
+details.navbox summary{cursor:pointer;font:600 14px var(--font-body);padding:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin-top:12px}
+.cell{height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font:600 13px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted);cursor:pointer}
+.cell.done{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+.cell.cur{outline:2px solid var(--accent);outline-offset:1px;color:var(--ink)}
+
+/* Hasil */
+.scoreline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big{font:800 64px/1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.of{font:600 22px var(--font-display);color:var(--muted)}
+.nilai{margin-left:auto;text-align:right}
+.nilai b{display:block;font:800 30px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.nilai span{font-size:12px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.tbars{display:grid;gap:12px;margin-top:6px}
+.tb .lbl{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:4px}
+.tb .lbl span:last-child{font-variant-numeric:tabular-nums;color:var(--muted);flex:none}
+.tb .track{margin:0}
+.rv{border-top:1px solid var(--line);padding:16px 0;display:grid;gap:6px}
+.rv:first-child{border-top:0}
+.rv-head{display:flex;gap:10px;align-items:center}
+.rv-q{font-weight:600;white-space:pre-line;text-wrap:pretty}
+.rv-a{font-size:15px}
+.chip{font:600 12px var(--font-body);padding:3px 9px;border-radius:99px}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.no{background:var(--bad-soft);color:var(--bad)}
+
+/* Guru */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.stat{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.stat b{display:block;font:800 26px/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:middle}
+th{font:600 12px var(--font-body);color:var(--muted);letter-spacing:.04em;text-transform:uppercase;border-top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.hard{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.hard li{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline}
+.hard .pct{font:700 15px var(--font-display);font-variant-numeric:tabular-nums;color:var(--bad)}
+.hard .sn{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;color:var(--muted)}
+textarea.tsv{width:100%;min-height:110px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Kuis Khulafaur Rasyidin<small>Pendidikan Agama Islam</small></div>
+    <div class="tabs" id="tabs" role="tablist" hidden>
+      <button type="button" role="tab" id="tab-kuis" aria-selected="true">Kuis</button>
+      <button type="button" role="tab" id="tab-hasil" aria-selected="false">Hasil peserta</button>
+    </div>
+  </header>
+
+  <!-- Mulai -->
+  <section id="view-start" class="stack">
+    <div class="card hero stack">
+      <div class="stack" style="gap:10px">
+        <span class="eyebrow">50 soal pilihan ganda</span>
+        <h1>Empat khalifah, tiga perang besar, dan Madinah</h1>
+        <p class="lede">Jawab satu per satu. Jawaban boleh diubah sampai kamu menekan Kirim. Setelah selesai, kamu bisa melihat pembahasan tiap soal.</p>
+      </div>
+      <form id="form-start" class="stack" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="nama">Nama lengkap</label>
+            <input type="text" id="nama" name="nama" autocomplete="name" maxlength="60">
+            <span class="err" id="nama-err" hidden>Isi namamu dulu supaya nilainya bisa dikenali.</span>
+          </div>
+          <div class="field">
+            <label for="kelas">Kelas (boleh kosong)</label>
+            <input type="text" id="kelas" name="kelas" maxlength="20" placeholder="mis. 8B">
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" type="submit" id="btn-start">Mulai kuis</button>
+        </div>
+        <p class="note">Nilaimu otomatis tercatat untuk guru kalau halaman ini dibuka dari akun Claude dengan akses Kontributor. Kalau tidak, skor tetap tampil di layarmu.</p>
+      </form>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:8px">Materi yang diujikan</h2>
+      <ul class="topics" id="topics"></ul>
+    </div>
+  </section>
+
+  <!-- Kuis -->
+  <section id="view-quiz" hidden>
+    <div class="card">
+      <div class="meta"><span id="qnum"></span><span id="answered"></span></div>
+      <div class="track"><div class="fill" id="bar"></div></div>
+      <div class="eyebrow" id="topic"></div>
+      <h2 class="stem" id="stem"></h2>
+      <div class="opts" id="opts" role="radiogroup" aria-label="Pilihan jawaban"></div>
+      <div class="pager">
+        <button type="button" class="btn" id="prev">Sebelumnya</button>
+        <button type="button" class="btn primary" id="next">Lanjut</button>
+      </div>
+      <div class="confirm" id="confirm" hidden>
+        <p id="confirm-text"></p>
+        <div class="row">
+          <button type="button" class="btn primary" id="send">Kirim jawaban</button>
+          <button type="button" class="btn" id="recheck">Periksa lagi</button>
+        </div>
+      </div>
+      <details class="navbox">
+        <summary>Daftar soal</summary>
+        <div class="grid" id="grid"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Hasil -->
+  <section id="view-result" class="stack" hidden>
+    <div class="card stack">
+      <div class="eyebrow" id="r-who"></div>
+      <div class="scoreline">
+        <span class="big" id="r-score"></span><span class="of" id="r-of"></span>
+        <div class="nilai"><b id="r-nilai"></b><span>nilai (0–100)</span></div>
+      </div>
+      <p class="note" id="save-status" aria-live="polite"></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="retake">Ulangi kuis</button>
+        <button type="button" class="btn" id="other">Ganti peserta</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px">Skor per materi</h2>
+      <div class="tbars" id="tbars"></div>
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:6px">
+        <h2 style="font-size:16px" id="rv-title">Pembahasan</h2>
+        <button type="button" class="btn small" id="rv-toggle"></button>
+      </div>
+      <div id="review"></div>
+    </div>
+  </section>
+
+  <!-- Guru -->
+  <section id="view-teacher" class="stack" hidden>
+    <div class="card stack">
+      <div class="row between">
+        <h2 style="font-size:18px">Hasil peserta</h2>
+        <div class="row">
+          <span class="note" id="copy-note" aria-live="polite"></span>
+          <button type="button" class="btn small" id="copy" hidden>Salin tabel</button>
+        </div>
+      </div>
+      <div id="teacher-body" class="stack"></div>
+      <textarea class="tsv" id="tsv" readonly hidden aria-label="Tabel hasil, siap disalin"></textarea>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* Soal: [pertanyaan, [A,B,C,D], indeks jawaban benar, pembahasan] */
+var QUESTIONS = [
+["Nama lengkap Khulafaur Rasyidin ke-4, yaitu Ali, adalah ....",["Ali bin Muhammad bin Abdullah","Ali bin Abi Thalib bin Abdul Muttalib","Ali bin Umar bin Khattab","Ali bin Abu Bakar bin As-Siddiq"],1,"Nama lengkapnya Ali bin Abi Thalib bin Abdul Muththalib, sepupu Nabi Muhammad SAW."],
+["Siapa nama ibu Ali bin Abi Thalib?",["Aisyah binti Abu Bakar","Fatimah binti Asad","Khadijah binti Khuwailid","Umm Salamah binti Abu Umayyah"],1,"Ibunda Ali adalah Fatimah binti Asad."],
+["Pada peristiwa mana Ali bin Abi Thalib dikenal karena berani tidur di tempat tidur Nabi Muhammad?",["Perang Uhud","Perang Badar","Hijrah ke Madinah","Perang Khandaq"],2,"Saat hijrah, Ali tidur di tempat tidur Nabi untuk mengelabui kaum Quraisy yang mengepung rumah beliau."],
+["Apa julukan Umar bin Khattab?",["Al Faruq","Assadullah","Al Amin","Assalam"],0,"Umar dijuluki Al-Faruq, artinya pembeda antara yang hak dan batil."],
+["Anak Ali bin Abi Thalib adalah ....",["Hasan dan Hasad","Hasan dan Husen","Upin dan Ipin","Abi dan Abu"],1,"Putra Ali dan Fatimah adalah Hasan dan Husain (Husen)."],
+["Di manakah Ali bin Abi Thalib dilahirkan?",["Madinah","Mekah","Ta'if","Kufa"],1,"Ali dilahirkan di Mekah."],
+["Perang Jamal terjadi akibat perselisihan antara Ali bin Abi Thalib dan siapa?",["Khalifah Umar bin Khattab","Aisyah, Talhah, dan Zubair","Muawiyah bin Abi Sufyan","Abu Bakar as-Siddiq"],1,"Perang Jamal terjadi antara pasukan Ali dan kelompok Aisyah, Thalhah, dan Zubair."],
+["Khalifah terakhir dalam Khulafaur Rasyidin adalah ....",["Abu Bakar Assiddiq","Umar bin Khattab","Ali bin Abi Thalib","Utsman bin Affan"],2,"Ali bin Abi Thalib adalah khalifah keempat, yang terakhir dari Khulafaur Rasyidin."],
+["Siapa istri Ali bin Abi Thalib yang juga merupakan putri Nabi Muhammad?",["Ummu Habibah","Aisyah","Fatimah az-Zahra","Hafshah"],2,"Ali menikah dengan Fatimah az-Zahra, putri Nabi Muhammad SAW."],
+["Ali bin Abi Thalib termasuk orang yang pertama kali masuk Islam dari golongan ....",["Hamba sahaya","Dewasa (laki-laki)","Anak-anak","Manusia"],2,"Ali masuk Islam saat masih anak-anak, sehingga termasuk Assabiqunal Awwalun dari golongan anak-anak."],
+["Khulafaur Rasyidin yang kedua adalah ....",["Umar bin Khattab","Umar bin Abdul Muthalib","Ali bin Abi Thalib","Umar bin Hisham"],0,"Khalifah kedua adalah Umar bin Khattab."],
+["Umar bin Khattab masuk Islam karena ....",["Iseng","Terpaksa","Mendengar adiknya membaca Al-Qur'an","Kalah taruhan"],2,"Umar masuk Islam setelah mendengar bacaan Al-Qur'an adiknya, Fatimah, dan hatinya tersentuh."],
+["Al-Faruq artinya ....",["Terpercaya","Pemilik dua cahaya","Pintu ilmu","Pembeda"],3,"Al-Faruq berarti pembeda antara yang benar dan yang batil."],
+["Umar bin Khattab masuk Islam atas doa siapa?",["Nabi Muhammad SAW","Abu Bakar Ash-Shiddiq","Ali bin Abi Thalib","Utsman bin Affan"],0,"Nabi Muhammad SAW berdoa agar Islam diperkuat dengan Umar bin Khattab."],
+["Sebelum masuk Islam, Umar bin Khattab terkenal sebagai ....",["Saudagar kaya","Panglima perang","Orang yang sangat keras","Pemimpin suku"],2,"Sebelum masuk Islam, Umar dikenal keras dan ditakuti, termasuk dalam menentang kaum muslim."],
+["Apa yang dilakukan Umar bin Khattab ketika mendengar adiknya, Fatimah, membaca Al-Qur'an, KECUALI ....",["Memarahi dan memukul adiknya","Menangis dan meminta maaf","Langsung masuk Islam","Melaporkan kepada kaum Quraisy"],3,"Umar memarahi dan memukul adiknya, lalu menyesal dan akhirnya masuk Islam. Ia tidak melaporkannya kepada Quraisy."],
+["Setelah menjadi khalifah, Umar bin Khattab dikenal sebagai pemimpin yang ....",["Kejam dan diktator","Bijaksana dan adil","Kaya dan mewah","Lemah dan tidak tegas"],1,"Umar dikenal bijaksana dan adil dalam memimpin."],
+["Salah satu kebijakan terkenal Umar bin Khattab sebagai khalifah adalah ....",["Mendirikan baitul maal","Membuat perjanjian Hudaibiyah","Menyebarkan agama Islam ke Afrika","Menaklukkan Asia"],0,"Umar mendirikan baitul maal untuk mengelola harta negara dan membantu rakyat yang membutuhkan."],
+["Apa yang dilakukan Umar bin Khattab ketika bertemu seorang ibu yang memasak batu untuk menenangkan anak-anaknya yang lapar?",["Mengabaikannya","Memberikan uang","Membawakan makanan dari baitul maal","Menyuruhnya bekerja"],2,"Umar sendiri membawakan bahan makanan dari baitul maal untuk ibu dan anak-anaknya itu."],
+["Umar bin Khattab meninggal dunia karena apa?",["Sakit tua","Dibunuh oleh seorang budak Persia","Kecelakaan","Gugur dalam pertempuran"],1,"Umar wafat setelah ditikam Abu Lu'lu'ah, seorang budak Persia, saat shalat Subuh."],
+["Perang yang terjadi pada tanggal 17 Ramadhan tahun 2 H adalah ....",["Perang Badar","Perang Khandaq","Perang Uhud","Perang Salib"],0,"Perang Badar terjadi pada 17 Ramadhan tahun 2 H."],
+["Dalam Perang Khandaq, Allah SWT membantu umat Islam mengalahkan pasukan kafir dengan cara ....",["Menurunkan angin dingin dan hujan lebat","Memerintahkan laba-laba untuk membuat jaring","Mengirim burung ababil dengan membawa batu dari neraka","Memerintahkan Malaikat Jibril untuk berperang"],0,"Allah mengirim angin dingin yang kencang dan hujan lebat sehingga pasukan sekutu kocar-kacir."],
+["Kekalahan umat Islam melawan kaum kafir Quraisy terjadi dalam ....",["Perang Uhud","Perang Badar","Perang Salib","Perang Khandaq"],0,"Umat Islam kalah dalam Perang Uhud setelah pasukan pemanah meninggalkan posnya di bukit."],
+["Perang yang menggunakan siasat membuat parit yang besar adalah perang ....",["Badar","Khandaq","Uhud","Salib"],1,"Perang Khandaq memakai siasat parit besar atas usul Salman Al-Farisi."],
+["Komandan pasukan muslim dalam Perang Badar adalah ....",["Ali bin Abi Thalib","Abu Bakar Ash-Shiddiq","Nabi Muhammad SAW","Umar bin Khattab"],2,"Nabi Muhammad SAW memimpin langsung pasukan muslim di Badar."],
+["Perang yang terjadi di sebuah bukit dan umat Islam mengalami kekalahan adalah perang ....",["Ahzab","Uhud","Khandaq","Badar"],1,"Perang Uhud terjadi di dekat bukit Uhud dan berakhir dengan kekalahan umat Islam."],
+["Perang yang dikenal dengan Yaumul Furqan adalah perang ....",["Khandaq","Salib","Badar","Uhud"],2,"Badar dijuluki Yaumul Furqan, hari pembeda antara yang hak dan batil."],
+["Penyebab utama Perang Uhud ....",["Perselisihan harta","Dendam atas kekalahan di Perang Badar","Konflik tanah","Perselisihan agama"],1,"Kaum Quraisy ingin membalas dendam atas kekalahan mereka di Badar."],
+["Panglima Perang Uhud dari pihak kafir Quraisy ....",["Salman Al-Farisi","Abu Sufyan","Abu Jahal","Abu Lahab"],1,"Abu Sufyan memimpin pasukan Quraisy di Uhud. Abu Jahal sudah tewas di Badar."],
+["Nama lain Perang Khandaq ....",["Perang Ahzab","Perang Badar","Perang Uhud","Perang Salib"],0,"Perang Khandaq juga disebut Perang Ahzab, artinya perang melawan pasukan sekutu."],
+["Kegiatan yang pertama kali dilakukan Rasulullah SAW setelah berada di Kota Madinah adalah ....",["Membangun Masjid Nabawi","Membangun tempat pertemuan suku","Melakukan shalat hajat","Melakukan pertemuan dengan pemuka Quraisy"],0,"Setelah tiba di Madinah, Nabi membangun Masjid Nabawi sebagai pusat kegiatan umat."],
+["Bangsa Arab Yahudi datang ke Madinah karena ....",["Diundang oleh penduduk Madinah","Dilanda krisis pangan","Disuruh oleh kaisar Romawi","Diusir oleh kaisar Romawi"],3,"Bangsa Yahudi datang ke Madinah setelah diusir oleh penguasa Romawi dari negeri mereka."],
+["Suku Aus dan Khazraj selalu berperang karena diadu domba oleh ....",["Bangsa Yahudi","Bangsa Nasrani","Bangsa Romawi","Bangsa Arab sendiri"],0,"Bangsa Yahudi mengadu domba Aus dan Khazraj agar mereka terus bermusuhan."],
+["Fungsi masjid pada zaman Rasulullah adalah untuk ....",["Melaksanakan shalat saja","Pusat kegiatan ibadah, pusat pendidikan, dan tempat berkumpul","Tempat perkumpulan para pemuka agama saja","Tempat mengadili orang-orang yang bersalah"],1,"Masjid menjadi pusat ibadah, pendidikan, dan tempat berkumpul umat."],
+["Sebelum datangnya Islam ke Madinah, keadaan perekonomian masyarakat Madinah telah dikuasai oleh ....",["Orang kafir Quraisy","Orang Yahudi","Bangsa Romawi","Bangsa Arab"],1,"Sebelum Islam datang, perekonomian Madinah banyak dikuasai orang Yahudi."],
+["Nabi Muhammad SAW berhasil menyatukan dua suku yang selalu bertikai, yaitu Aus dan Khazraj, menjadi golongan ....",["Muhajirin","Anshor","Salafiyah","Muawwiyah"],1,"Aus dan Khazraj dipersatukan dalam golongan Anshar (penolong)."],
+["Bangsa yang ada di kota Madinah adalah ....",["Arab dan Romawi","Yahudi dan Israil","Arab dan Yahudi","Nasrani dan Yahudi"],2,"Penduduk Madinah terdiri dari bangsa Arab dan Yahudi."],
+["Dalam mengatur pemerintahan dan negara, Nabi Muhammad SAW membuat undang-undang yang tertuang dalam ....",["Piagam Madinah","Piagam Makkah","Piagam Yahudi","Piagam Arab"],0,"Nabi membuat Piagam Madinah sebagai dasar aturan hidup bersama."],
+["Orang-orang yang hijrah dari Mekkah ke Madinah dikenal dengan nama ....",["Golongan Muhajirin","Golongan Anshor","Golongan Samawiyah","Golongan Madaniyyah"],0,"Orang yang hijrah dari Mekkah ke Madinah disebut Muhajirin."],
+["Adapun fungsi dari Piagam Madinah adalah ....",["Menyatukan suku-suku yang ada di Madinah","Membantu yang membutuhkan","Nabi Muhammad SAW sebagai rasul","Kota Madinah sebagai wilayah perang"],0,"Piagam Madinah menyatukan suku dan agama yang berbeda di Madinah dalam satu tatanan."],
+["Siapa khalifah pertama setelah Nabi Muhammad SAW?",["Umar bin Khattab","Ali bin Abi Thalib","Abu Bakar RA","Utsman bin Affan"],2,"Abu Bakar adalah khalifah pertama setelah Nabi wafat."],
+["Apa nama lengkap Khalifah Abu Bakar RA?",["Abdullah bin Abi Quhafah","Abu Bakar Al-Farooq","Abu Bakar Al-Khattab","Abu Bakar Al-Mujahid"],0,"Nama lengkapnya Abdullah bin Abi Quhafah, bergelar Ash-Shiddiq."],
+["Apa yang dilakukan Abu Bakar RA ketika Nabi Muhammad SAW wafat?",["Menangis dan tetap tegar","Menyatakan dirinya sebagai pemimpin","Mengorganisir pasukan","Mengambil alih kepemimpinan sebagai khalifah"],0,"Saat Nabi wafat, Abu Bakar tetap tegar dan menenangkan para sahabat yang terguncang."],
+["Putri Abu Bakar yang menjadi istri Rasulullah adalah ....",["Khadijah","Asma","Hafshah","Aisyah"],3,"Aisyah binti Abu Bakar adalah istri Nabi Muhammad SAW."],
+["Utsman diangkat menjadi khalifah di usia ....",["60 tahun","70 tahun","80 tahun","90 tahun"],1,"Utsman diangkat menjadi khalifah pada usia sekitar 70 tahun."],
+["Abu Bakar As-Siddiq meninggal pada usia 63 tahun, bertepatan pada tanggal ....",["8 Jumadil Awal 13 H","8 Jumadil Akhir 13 H","8 Dzulhijjah 13 H","8 Rabiul Awal 13 H"],1,"Abu Bakar wafat pada bulan Jumadil Akhir tahun 13 H di usia 63 tahun. Sumber berbeda dalam menyebut tanggalnya."],
+["Dzunnurain artinya ....",["Pemilik dua cahaya","Pemilik dua istri","Pemilik dua anak","Pemilik dua kegelapan"],0,"Dzunnurain berarti pemilik dua cahaya, karena Utsman menikahi dua putri Nabi, Ruqayyah dan Ummu Kultsum."],
+["Utsman masuk Islam karena ajakan ....",["Abu Bakar","Abdurrahman bin Auf","Thalhah bin Ubaidillah","Saad bin Abi Waqqash"],0,"Utsman masuk Islam atas ajakan Abu Bakar."],
+["Utsman meninggal karena ....",["Dibunuh","Demam","Diracun","Dimakan harimau"],0,"Utsman wafat dibunuh oleh para pemberontak saat membaca Al-Qur'an di rumahnya."],
+["Utsman meninggal di umur ....",["52 tahun","72 tahun","62 tahun","82 tahun"],3,"Utsman wafat pada usia sekitar 82 tahun. Sebagian riwayat menyebut usia yang berbeda."]
+];
+var TOPICS = [
+  {name:"Ali bin Abi Thalib", from:1, to:10},
+  {name:"Umar bin Khattab", from:11, to:20},
+  {name:"Perang Badar, Uhud, dan Khandaq", from:21, to:30},
+  {name:"Madinah dan Piagam Madinah", from:31, to:40},
+  {name:"Abu Bakar dan Utsman", from:41, to:50}
+];
+var N = QUESTIONS.length;
+var LETTERS = "abcd";
+
+function $(id){ return document.getElementById(id); }
+function h(tag, props){
+  var el = document.createElement(tag);
+  if(props){
+    for(var k in props){
+      var v = props[k];
+      if(k === "class") el.className = v;
+      else if(k === "text") el.textContent = v;
+      else if(k.slice(0,2) === "on") el.addEventListener(k.slice(2), v);
+      else if(v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+    }
+  }
+  for(var i = 2; i < arguments.length; i++){
+    var c = arguments[i];
+    if(c == null) continue;
+    el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+function topicOf(i){
+  for(var t = 0; t < TOPICS.length; t++){ if(i + 1 >= TOPICS[t].from && i + 1 <= TOPICS[t].to) return TOPICS[t]; }
+  return TOPICS[0];
+}
+
+var state = {
+  phase:"start", tab:"kuis", name:"", kelas:"", idx:0,
+  answers:new Array(N).fill(-1), result:null, showAll:false,
+  isAdmin:false, isOwner:false, rows:[], loading:false, slow:false, dbErr:null
+};
+
+/* Draf di perangkat ini: hanya kenyamanan, halaman tetap jalan tanpa ini */
+var KEY = "kuis-khulafaur-rasyidin-draft";
+function readDraft(){
+  try{
+    var d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(d && Array.isArray(d.answers) && d.answers.length === N) return d;
+  }catch(e){}
+  return null;
+}
+function writeDraft(){
+  try{ localStorage.setItem(KEY, JSON.stringify({name:state.name, kelas:state.kelas, idx:state.idx, answers:state.answers})); }catch(e){}
+}
+function clearDraft(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+var draft = readDraft();
+if(draft){
+  state.name = String(draft.name || "");
+  state.kelas = String(draft.kelas || "");
+  state.idx = Math.min(Math.max(draft.idx | 0, 0), N - 1);
+  state.answers = draft.answers.map(function(x){ return (Number.isInteger(x) && x >= 0 && x < 4) ? x : -1; });
+}
+function answeredCount(){ return state.answers.filter(function(a){ return a >= 0; }).length; }
+
+/* ---------- Tampilan ---------- */
+function render(){
+  var inKuis = state.tab === "kuis";
+  $("view-start").hidden = !(inKuis && state.phase === "start");
+  $("view-quiz").hidden = !(inKuis && state.phase === "quiz");
+  $("view-result").hidden = !(inKuis && state.phase === "result");
+  $("view-teacher").hidden = state.tab !== "hasil";
+  $("tab-kuis").setAttribute("aria-selected", inKuis ? "true" : "false");
+  $("tab-hasil").setAttribute("aria-selected", inKuis ? "false" : "true");
+  if(inKuis && state.phase === "start") renderStart();
+  if(inKuis && state.phase === "quiz") renderQuiz();
+  if(inKuis && state.phase === "result") renderResult();
+  if(!inKuis) renderTeacher();
+}
+
+function renderStart(){
+  $("nama").value = state.name;
+  $("kelas").value = state.kelas;
+  $("btn-start").textContent = answeredCount() > 0 ? "Lanjutkan kuis" : "Mulai kuis";
+  var ul = $("topics");
+  if(!ul.children.length){
+    TOPICS.forEach(function(t){
+      ul.append(h("li", null, h("span", {class:"rng", text:"Soal " + t.from + (t.to > t.from ? "–" + t.to : "")}), h("span", {text:t.name})));
+    });
+  }
+}
+
+function updateMeta(){
+  var a = answeredCount();
+  $("qnum").textContent = "Soal " + (state.idx + 1) + " dari " + N;
+  $("answered").textContent = a + " dari " + N + " terjawab";
+  $("bar").style.width = (a / N * 100) + "%";
+  var cells = $("grid").children;
+  for(var i = 0; i < cells.length; i++){
+    cells[i].className = "cell" + (state.answers[i] >= 0 ? " done" : "") + (i === state.idx ? " cur" : "");
+  }
+}
+
+function renderQuiz(){
+  var i = state.idx, q = QUESTIONS[i];
+  $("topic").textContent = topicOf(i).name;
+  $("stem").textContent = q[0];
+  var box = $("opts");
+  box.replaceChildren();
+  q[1].forEach(function(text, k){
+    var input = h("input", {type:"radio", name:"opt", value:String(k)});
+    input.checked = state.answers[i] === k;
+    input.addEventListener("change", function(){
+      state.answers[i] = k;
+      writeDraft();
+      $("confirm").hidden = true;
+      updateMeta();
+    });
+    box.append(h("label", {class:"opt"}, input, h("span", {class:"key", text:LETTERS[k].toUpperCase()}), h("span", {class:"txt", text:text})));
+  });
+  $("prev").disabled = i === 0;
+  $("next").textContent = i === N - 1 ? "Selesai" : "Lanjut";
+  var grid = $("grid");
+  if(grid.children.length !== N){
+    grid.replaceChildren();
+    for(var n = 0; n < N; n++){
+      (function(n){
+        grid.append(h("button", {type:"button", class:"cell", text:String(n + 1), "aria-label":"Soal " + (n + 1), onclick:function(){ go(n); }}));
+      })(n);
+    }
+  }
+  updateMeta();
+}
+
+function go(n){
+  state.idx = Math.min(Math.max(n, 0), N - 1);
+  $("confirm").hidden = true;
+  writeDraft();
+  renderQuiz();
+}
+
+function openConfirm(){
+  var left = N - answeredCount();
+  $("confirm-text").textContent = left > 0
+    ? "Masih ada " + left + " soal yang belum dijawab. Soal kosong dihitung salah. Kirim sekarang?"
+    : "Semua soal sudah dijawab. Kirim jawabanmu sekarang?";
+  $("recheck").textContent = left > 0 ? "Ke soal kosong pertama" : "Periksa lagi";
+  $("confirm").hidden = false;
+}
+
+function submitQuiz(){
+  var score = 0;
+  state.answers.forEach(function(a, i){ if(a === QUESTIONS[i][2]) score++; });
+  state.result = {score:score, answers:state.answers.slice()};
+  state.phase = "result";
+  state.showAll = false;
+  clearDraft();
+  $("confirm").hidden = true;
+  render();
+  window.scrollTo(0, 0);
+  saveResult(state.result);
+}
+
+function renderResult(){
+  var r = state.result;
+  if(!r) return;
+  $("r-who").textContent = state.name + (state.kelas ? " · " + state.kelas : "");
+  $("r-score").textContent = String(r.score);
+  $("r-of").textContent = "/ " + N + " benar";
+  $("r-nilai").textContent = String(Math.round(r.score / N * 100));
+
+  var tb = $("tbars");
+  tb.replaceChildren();
+  TOPICS.forEach(function(t){
+    var total = t.to - t.from + 1, ok = 0;
+    for(var i = t.from - 1; i < t.to; i++){ if(r.answers[i] === QUESTIONS[i][2]) ok++; }
+    tb.append(h("div", {class:"tb"},
+      h("div", {class:"lbl"}, h("span", {text:t.name}), h("span", {text:ok + " / " + total})),
+      h("div", {class:"track"}, h("div", {class:"fill", style:"width:" + (ok / total * 100) + "%"}))
+    ));
+  });
+
+  var list = $("review");
+  list.replaceChildren();
+  var shown = 0;
+  QUESTIONS.forEach(function(q, i){
+    var a = r.answers[i], ok = a === q[2];
+    if(!state.showAll && ok) return;
+    shown++;
+    var chipText = ok ? "Benar" : (a < 0 ? "Tidak dijawab" : "Salah");
+    var item = h("article", {class:"rv"},
+      h("div", {class:"rv-head"}, h("span", {class:"chip " + (ok ? "ok" : "no"), text:chipText}), h("span", {class:"note", text:"Soal " + (i + 1)})),
+      h("p", {class:"rv-q", text:q[0]})
+    );
+    if(!ok && a >= 0) item.append(h("p", {class:"rv-a"}, "Jawabanmu: ", h("strong", {text:LETTERS[a].toUpperCase() + ". " + q[1][a]})));
+    item.append(h("p", {class:"rv-a"}, "Jawaban benar: ", h("strong", {text:LETTERS[q[2]].toUpperCase() + ". " + q[1][q[2]]})));
+    item.append(h("p", {class:"note", text:q[3]}));
+    list.append(item);
+  });
+  if(!shown) list.append(h("p", {class:"note", text:"Semua jawabanmu benar. Tidak ada soal yang perlu dibahas."}));
+  $("rv-title").textContent = state.showAll ? "Pembahasan semua soal" : "Pembahasan soal yang salah";
+  $("rv-toggle").textContent = state.showAll ? "Hanya yang salah" : "Tampilkan semua";
+}
+
+/* ---------- Simpan hasil ke db ---------- */
+function setStatus(kind, text){
+  var el = $("save-status");
+  el.dataset.s = kind;
+  el.textContent = text;
+}
+async function saveResult(r){
+  setStatus("busy", "Mengirim nilai ke guru…");
+  try{
+    var c = window.claude;
+    if(!c || !c.use){ setStatus("local", "Nilai belum terkirim ke guru karena halaman ini dibuka di luar akun Claude. Skor di layar ini tetap berlaku."); return; }
+    var db = await c.use("db");
+    var user = await c.use("user");
+    var uid = user ? await user.id() : null;
+    if(!db || !uid){ setStatus("local", "Nilai belum terkirim ke guru. Masuk ke akun Claude lalu buka lagi tautan ini supaya hasilmu tercatat."); return; }
+    var ref = db.doc("results/" + uid);
+    var prev = null;
+    try{ var s = await ref.get(); if(s.exists) prev = s.data(); }catch(e){}
+    var best = Math.max(prev && typeof prev.bestScore === "number" ? prev.bestScore : 0, r.score);
+    await ref.set({
+      name:state.name, kelas:state.kelas, lastScore:r.score, bestScore:best,
+      attempts:((prev && prev.attempts) || 0) + 1, total:N,
+      answers:r.answers.map(function(a){ return a < 0 ? "" : LETTERS[a]; }),
+      updatedAt:new Date().toISOString()
+    });
+    setStatus("saved", "Nilai sudah terkirim ke guru.");
+  }catch(e){
+    if(e && e.code === "invalid_argument") setStatus("error", "Nilai belum tercatat karena aksesmu hanya untuk melihat. Minta guru memberi akses Kontributor, lalu ulangi kuis.");
+    else setStatus("error", "Nilai belum terkirim. Periksa koneksi, lalu ulangi kuis untuk mengirim lagi.");
+  }
+}
+
+/* ---------- Tampilan guru ---------- */
+function fmtTime(iso){
+  try{ return new Date(iso).toLocaleString("id-ID", {dateStyle:"medium", timeStyle:"short"}); }catch(e){ return ""; }
+}
+function nilai(score){ return Math.round((score || 0) / N * 100); }
+
+function renderTeacher(){
+  var box = $("teacher-body");
+  box.replaceChildren();
+  $("copy").hidden = true;
+  $("tsv").hidden = true;
+  if(state.dbErr){
+    box.append(h("p", {class:"note", text:"Daftar hasil belum bisa dimuat. Buka ulang halaman ini untuk mencoba lagi."}));
+    return;
+  }
+  if(state.loading){
+    box.append(h("p", {class:"note", text: state.slow ? "Data belum terjangkau, mungkin koneksi sedang lambat. Halaman tetap menunggu." : "Memuat hasil…"}));
+    return;
+  }
+  var rows = state.rows.slice().sort(function(a, b){
+    return ((b.bestScore || 0) - (a.bestScore || 0)) || String(a.name).localeCompare(String(b.name));
+  });
+  if(!rows.length){
+    box.append(h("p", {class:"note", text:"Belum ada hasil. Nilai muncul di sini setelah peserta menekan Kirim jawaban. Peserta perlu masuk ke akun Claude dan punya akses Kontributor."}));
+    return;
+  }
+  var bests = rows.map(function(r){ return r.bestScore || 0; });
+  var avg = bests.reduce(function(s, x){ return s + x; }, 0) / bests.length;
+  box.append(h("div", {class:"stats"},
+    h("div", {class:"stat"}, h("b", {text:String(rows.length)}), h("span", {text:"Peserta"})),
+    h("div", {class:"stat"}, h("b", {text:String(Math.round(avg / N * 100))}), h("span", {text:"Rata-rata nilai terbaik"})),
+    h("div", {class:"stat"}, h("b", {text:String(nilai(Math.max.apply(null, bests)))}), h("span", {text:"Tertinggi"})),
+    h("div", {class:"stat"}, h("b", {text:String(nilai(Math.min.apply(null, bests)))}), h("span", {text:"Terendah"}))
+  ));
+
+  var head = h("tr", null,
+    h("th", {text:"Nama"}), h("th", {text:"Kelas"}),
+    h("th", {class:"num", text:"Terakhir"}), h("th", {class:"num", text:"Terbaik"}),
+    h("th", {class:"num", text:"Percobaan"}), h("th", {text:"Waktu"}),
+    state.isOwner ? h("th", {text:""}) : null
+  );
+  var body = h("tbody");
+  rows.forEach(function(r){
+    body.append(h("tr", null,
+      h("td", {text:String(r.name || "Tanpa nama")}),
+      h("td", {text:String(r.kelas || "")}),
+      h("td", {class:"num", text:nilai(r.lastScore) + " (" + (r.lastScore || 0) + "/" + N + ")"}),
+      h("td", {class:"num", text:nilai(r.bestScore) + " (" + (r.bestScore || 0) + "/" + N + ")"}),
+      h("td", {class:"num", text:String(r.attempts || 1)}),
+      h("td", {text:fmtTime(r.updatedAt)}),
+      state.isOwner ? h("td", null, deleteButton(r.id)) : null
+    ));
+  });
+  box.append(h("div", {class:"tablewrap"}, h("table", null, h("thead", null, head), body)));
+
+  var withAns = rows.filter(function(r){ return Array.isArray(r.answers) && r.answers.length === N; });
+  if(withAns.length){
+    var pct = QUESTIONS.map(function(q, i){
+      var L = LETTERS[q[2]];
+      var c = withAns.filter(function(r){ return r.answers[i] === L; }).length;
+      return {i:i, p:c / withAns.length};
+    });
+    var hard = pct.slice().sort(function(a, b){ return (a.p - b.p) || (a.i - b.i); }).slice(0, 5);
+    var ul = h("ul", {class:"hard"});
+    hard.forEach(function(x){
+      ul.append(h("li", null,
+        h("span", {class:"pct", text:Math.round(x.p * 100) + "% benar"}),
+        h("div", null, h("strong", {text:"Soal " + (x.i + 1)}), h("div", {class:"sn", text:QUESTIONS[x.i][0]}))
+      ));
+    });
+    box.append(h("div", null,
+      h("h3", {style:"font-size:15px;margin-bottom:10px", text:"Soal yang paling sering salah"}),
+      ul,
+      h("p", {class:"note", style:"margin-top:10px", text:"Dihitung dari percobaan terakhir tiap peserta."})
+    ));
+  }
+  $("copy").hidden = false;
+  $("copy").onclick = function(){ copyTable(rows); };
+}
+
+function deleteButton(id){
+  var b = h("button", {type:"button", class:"btn small danger", text:"Hapus"});
+  var armed = false, timer = null;
+  b.addEventListener("click", async function(){
+    if(!armed){
+      armed = true; b.textContent = "Yakin hapus?";
+      timer = setTimeout(function(){ armed = false; b.textContent = "Hapus"; }, 4000);
+      return;
+    }
+    clearTimeout(timer);
+    b.disabled = true;
+    try{
+      var db = await window.claude.use("db");
+      await db.doc("results/" + id).delete();
+    }catch(e){ b.disabled = false; armed = false; b.textContent = "Gagal, coba lagi"; }
+  });
+  return b;
+}
+
+async function copyTable(rows){
+  function clean(s){ return String(s == null ? "" : s).replace(/[\t\r\n]+/g, " "); }
+  var lines = [["Nama","Kelas","Nilai terakhir","Nilai terbaik","Percobaan","Waktu"].join("\t")];
+  rows.forEach(function(r){
+    lines.push([clean(r.name), clean(r.kelas), nilai(r.lastScore), nilai(r.bestScore), r.attempts || 1, clean(fmtTime(r.updatedAt))].join("\t"));
+  });
+  var text = lines.join("\n");
+  try{
+    await navigator.clipboard.writeText(text);
+    $("copy-note").textContent = "Tabel disalin.";
+    $("tsv").hidden = true;
+  }catch(e){
+    var ta = $("tsv");
+    ta.hidden = false; ta.value = text; ta.focus(); ta.select();
+    $("copy-note").textContent = "Salin manual dari kotak di bawah.";
+  }
+}
+
+async function initAdmin(){
+  try{
+    var c = window.claude;
+    if(!c || !c.use) return;
+    var user = await c.use("user");
+    if(!user) return;
+    var flags = await Promise.all([user.canEdit(), user.isOwner()]);
+    if(!flags[0]) return;
+    state.isAdmin = true; state.isOwner = flags[1];
+    $("tabs").hidden = false;
+    var db = await c.use("db");
+    if(!db){ state.dbErr = "unavailable"; return; }
+    state.loading = true;
+    var timer = setTimeout(function(){ if(state.loading){ state.slow = true; renderTeacher(); } }, 10000);
+    db.collection("results").onSnapshot(function(snap){
+      clearTimeout(timer);
+      state.loading = false; state.slow = false; state.dbErr = null;
+      state.rows = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      if(state.tab === "hasil") renderTeacher();
+    }, function(err){
+      clearTimeout(timer);
+      state.loading = false; state.dbErr = (err && err.code) || "error";
+      if(state.tab === "hasil") renderTeacher();
+    });
+  }catch(e){}
+}
+
+/* ---------- Peristiwa ---------- */
+$("form-start").addEventListener("submit", function(e){
+  e.preventDefault();
+  var nm = $("nama").value.trim();
+  if(!nm){ $("nama-err").hidden = false; $("nama").focus(); return; }
+  $("nama-err").hidden = true;
+  state.name = nm; state.kelas = $("kelas").value.trim();
+  state.phase = "quiz";
+  var firstEmpty = state.answers.indexOf(-1);
+  if(answeredCount() === 0) state.idx = 0;
+  else if(firstEmpty >= 0 && state.idx === 0) state.idx = firstEmpty;
+  writeDraft(); render(); window.scrollTo(0, 0);
+});
+$("prev").addEventListener("click", function(){ go(state.idx - 1); });
+$("next").addEventListener("click", function(){
+  if(state.idx === N - 1) openConfirm(); else go(state.idx + 1);
+});
+$("recheck").addEventListener("click", function(){
+  var firstEmpty = state.answers.indexOf(-1);
+  $("confirm").hidden = true;
+  if(firstEmpty >= 0) go(firstEmpty);
+});
+$("send").addEventListener("click", submitQuiz);
+$("rv-toggle").addEventListener("click", function(){ state.showAll = !state.showAll; renderResult(); });
+$("retake").addEventListener("click", function(){
+  state.answers = new Array(N).fill(-1); state.idx = 0; state.result = null; state.phase = "quiz";
+  writeDraft(); render(); window.scrollTo(0, 0);
+});
+$("other").addEventListener("click", function(){
+  state.answers = new Array(N).fill(-1); state.idx = 0; state.result = null; state.phase = "start";
+  state.name = ""; state.kelas = "";
+  clearDraft(); render(); window.scrollTo(0, 0);
+});
+$("tab-kuis").addEventListener("click", function(){ state.tab = "kuis"; render(); });
+$("tab-hasil").addEventListener("click", function(){ state.tab = "hasil"; render(); });
+
+render();
+initAdmin();
+})();
+</script>
+
+</body></html>
